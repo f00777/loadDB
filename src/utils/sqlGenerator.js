@@ -6,13 +6,16 @@ const generateSQLScript = (csvData, tableName) => {
   const headers = csvData[0]; // Primera fila como headers
   const values = csvData.slice(1); // Resto como valores
 
-  let sqlScript = `INSERT INTO "${tableName}" (${headers.join(", ")}) VALUES\n`;
+  console.log(headers.slice(0,-1))
+  console.log(values.slice(0,-1))
+
+  let sqlScript = `INSERT INTO ${tableName} (${headers.slice(0,-1).join(", ")}) VALUES\n`;
   
-  const valueLines = values.map(row => `(${row.map(value => `'${value}'`).join(", ")})`).join(",\n");
+  const valueLines = values.map(row => `(${row.map(value => `'${value}'`).slice(0,-1).join(", ")})`).join(",\n");
   sqlScript += valueLines + ";";
   
   return sqlScript;
-};
+};  
 
 const downloadSQLFile = (sqlScript, fileName = "script.sql") => {
   const blob = new Blob([sqlScript], { type: "text/plain" });
