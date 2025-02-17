@@ -4,7 +4,7 @@ import React from "react";
 const FormInit = ({formData, handleChange, handleSubmit}) =>{
     return (
         <div className="bg-transparent p-8 rounded-lg w-full max-w-md">
-          <h2 className="text-4xl font-extrabold mb-4 text-center text-indigo-600">Conectar a Base de Datos</h2>
+          <h2 className="text-4xl font-extrabold mb-4 text-center text-amber-400">TZ Connect</h2>
           <form onSubmit={handleSubmit}>
     
             <div className="mb-4">
