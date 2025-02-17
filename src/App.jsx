@@ -58,7 +58,7 @@ function App() {
 
       console.log(sqlScript)
 
-      fetch('http://localhost:3001/api/insert', {
+      fetch('https://loaddbapi.vercel.app/api/insert', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json', // Asegúrate de enviar el contenido como JSON
