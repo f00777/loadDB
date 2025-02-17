@@ -56,6 +56,8 @@ function App() {
       // Generar el script SQL usando el nombre de la tabla desde el formulario
       const sqlScript = generateSQLScript([headers, ...rows], formData.table);
 
+      console.log(sqlScript)
+
       fetch('http://localhost:3001/api/insert', {
           method: 'POST',
           headers: {
@@ -67,18 +69,17 @@ function App() {
       .then((data) => {
         console.log("la data es: ", data)
         setInsertResult(data)
-        setStep(4)
+        setStep(5)
       })
       .catch((error) => {
         console.log("el error es: ", error)
         setInsertResult(error)
+        setStep(4)
       });
   
       // Descargar el archivo SQL
-      downloadSQLFile(sqlScript);
+      downloadSQLFile(sqlScript.crudaScript);
     });
-
-    setStep(4);
   };
   
 
@@ -100,7 +101,7 @@ function App() {
 
         </div>
       )   
-      : (
+      : step === 4 ? (
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4 text-indigo-600">Resultados</h2>
             <div>
@@ -109,7 +110,14 @@ function App() {
                 ))}
             </div>
           </div>
-      ) }
+      ) : (
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4 text-indigo-600">DATOS INSERTADOS CORRECTAMENTE</h2>
+            
+        </div>
+      )
+      
+      }
     </div>
   );
 }

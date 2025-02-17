@@ -9,12 +9,24 @@ const generateSQLScript = (csvData, tableName) => {
   console.log(headers.slice(0,-1))
   console.log(values.slice(0,-1))
 
-  let sqlScript = `INSERT INTO ${tableName} (${headers.slice(0,-1).join(", ")}) VALUES\n`;
+  //insertion
+  let crudaScript = `INSERT INTO Cruda${tableName} (${headers.slice(0,-1).join(", ")}) VALUES\n`;
+  let tScript = `INSERT INTO ${tableName} (${headers.slice(0,-1).join(", ")}) VALUES\n`;
+  let transformScript = `INSERT INTO ${tableName}Transform (${headers.slice(0,-1).join(", ")}) VALUES\n`;
   
   const valueLines = values.map(row => `(${row.map(value => `'${value}'`).slice(0,-1).join(", ")})`).join(",\n");
-  sqlScript += valueLines + ";";
+  tScript += valueLines + ";";
+  crudaScript += valueLines + ";";
+  transformScript += valueLines + ";";
+
+  //procedures
+
+  let cleanTransform = `TRUNCATE TABLE ${tableName}Transform`
+  let cleanTemp = `TRUNCATE TABLE ${tableName}Temp`
+  let pTemp = `EXEC c${tableName}Temp` 
+  let pTable = `EXEC c${tableName}`
   
-  return sqlScript;
+  return {crudaScript, tScript, transformScript, cleanTransform, cleanTemp, pTemp, pTable};
 };  
 
 const downloadSQLFile = (sqlScript, fileName = "script.sql") => {

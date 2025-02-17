@@ -45,12 +45,43 @@ app.post('/api/insert', async(req, res) => {
     dbConfig.database = database
 
     console.log(dbConfig)
+    console.log('El texto es: ', text)
 
     try {
         await sql.connect(dbConfig);
-        const result = await sql.query(text); // Cambia la consulta según tu base de datos
-        console.log(result)
-        res.json(result);
+        
+        //Cruda
+        const resultCruda = await sql.query(text.crudaScript); // Cambia la consulta según tu base de datos
+        console.log("cruda: ", resultCruda)
+
+        //cTransform
+        const resultTransform = await sql.query(text.transformScript);
+        console.log("resultTransform: ", resultTransform)
+
+        //cTemp
+        const resultTemp = await sql.query(text.pTemp);
+        console.log("resultTemp: ", resultTemp)
+
+        //cTemp
+        const resultTable = await sql.query(text.pTable);
+        console.log("resultTable: ", resultTable)
+
+        
+        console.log("Iniciando los 10 s")
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        console.log("terminado los 10 s")
+
+
+        //cleanTransform
+        const cleanTransform = await sql.query(text.cleanTransform);
+        console.log("cleanTransform: ", cleanTransform)
+
+        //cleanTemp
+        const cleanTemp = await sql.query(text.cleanTemp);
+        console.log("cleanTemp: ", cleanTemp)
+
+
+        res.json(resultTable);
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error.message });

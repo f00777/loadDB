@@ -21,7 +21,6 @@ const SelectTable = ({handleSelectTableSubmit}) => {
                     <option value="">-- Selecciona una tabla --</option>
                     <option value="VentaNegocio">VentaNegocio</option>
                     <option value="SabanaCompleta">SabanaCompleta</option>
-                    <option value="CrudaVentaNegocio">CrudaVentaNegocio</option>
                 </select>
             </div>
     
