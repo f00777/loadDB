@@ -9,7 +9,7 @@ const FormInit = ({formData, handleChange, handleSubmit}) =>{
             alt="Turismo Zahr Logo" 
             className="pb-6"
           />
-          <h2 className="text-4xl font-extrabold mb-4 text-center text-amber-400">TZ Load</h2>
+          <h2 className="text-4xl font-extrabold mb-4 text-center text-amber-400">Carga de Reportes</h2>
           <form onSubmit={handleSubmit}>
     
             <div className="mb-4">
