@@ -5,29 +5,32 @@ const generateSQLScript = (csvData, tableName) => {
   
   const headers = csvData[0]; // Primera fila como headers
   const values = csvData.slice(1); // Resto como valores
+  const chunkSize = 200;
 
-  console.log(headers.slice(0,-1))
-  console.log(values.slice(0,-1))
+  const createInsertScripts = (prefix) => {
+    let scripts = [];
+    for (let i = 0; i < values.length; i += chunkSize) {
+      const chunk = values.slice(i, i + chunkSize);
+      const valueLines = chunk.map(row => `(${row.map(value => `'${value}'`).slice(0,-1).join(", ")})`).join(",\n");
+      const script = `${prefix} VALUES\n${valueLines};`;
+      scripts.push(script);
+    }
+    return scripts;
+  };
 
-  //insertion
-  let crudaScript = `INSERT INTO Cruda${tableName} (${headers.slice(0,-1).join(", ")}) VALUES\n`;
-  let tScript = `INSERT INTO ${tableName} (${headers.slice(0,-1).join(", ")}) VALUES\n`;
-  let transformScript = `INSERT INTO ${tableName}Transform (${headers.slice(0,-1).join(", ")}) VALUES\n`;
-  
-  const valueLines = values.map(row => `(${row.map(value => `'${value}'`).slice(0,-1).join(", ")})`).join(",\n");
-  tScript += valueLines + ";";
-  crudaScript += valueLines + ";";
-  transformScript += valueLines + ";";
+  const headersFormatted = headers.slice(0,-1).map(header => `[${header}]`).join(", ");
+  const crudaScripts = createInsertScripts(`INSERT INTO Cruda${tableName} (${headersFormatted})`);
+  const tScripts = createInsertScripts(`INSERT INTO ${tableName} (${headersFormatted})`);
+  const transformScripts = createInsertScripts(`INSERT INTO ${tableName}Transform (${headersFormatted})`);
 
-  //procedures
+  let cleanTransform = `TRUNCATE TABLE ${tableName}Transform`;
+  let cleanTemp = `TRUNCATE TABLE ${tableName}Temp`;
+  let pTemp = `EXEC c${tableName}Temp`;
+  let pTable = `EXEC c${tableName}`;
 
-  let cleanTransform = `TRUNCATE TABLE ${tableName}Transform`
-  let cleanTemp = `TRUNCATE TABLE ${tableName}Temp`
-  let pTemp = `EXEC c${tableName}Temp` 
-  let pTable = `EXEC c${tableName}`
-  
-  return {crudaScript, tScript, transformScript, cleanTransform, cleanTemp, pTemp, pTable};
-};  
+  return { crudaScripts, tScripts, transformScripts, cleanTransform, cleanTemp, pTemp, pTable };
+};
+
 
 const downloadSQLFile = (sqlScript, fileName = "script.sql") => {
   const blob = new Blob([sqlScript], { type: "text/plain" });
@@ -39,4 +42,4 @@ const downloadSQLFile = (sqlScript, fileName = "script.sql") => {
   document.body.removeChild(link);
 };
 
-export { generateSQLScript, downloadSQLFile };
+export {generateSQLScript, downloadSQLFile };

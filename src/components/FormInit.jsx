@@ -4,6 +4,11 @@ import React from "react";
 const FormInit = ({formData, handleChange, handleSubmit}) =>{
     return (
         <div className="bg-transparent p-8 rounded-lg w-full max-w-md">
+          <img 
+            src="https://turismozahr.cl/wp-content/uploads/2017/07/Logo_Turismo_Zahr-e1501098171436.png" 
+            alt="Turismo Zahr Logo" 
+            className="pb-6"
+          />
           <h2 className="text-4xl font-extrabold mb-4 text-center text-amber-400">TZ Connect</h2>
           <form onSubmit={handleSubmit}>
     

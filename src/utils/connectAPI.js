@@ -1,15 +1,53 @@
-// Esta función hace el fetch a la API de Express
-export const fetchData = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/api/data'); // Asegúrate de que el puerto sea el correcto
+async function enviarTextoPlanoEnOrden(dataArray, url) {
+  try {
+    for (const data of dataArray) {
+      
+      const response = await fetch(url, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "text/plain" },
+        body: data
+      });
+
       if (!response.ok) {
-        throw new Error('Error al obtener los datos');
+        throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
       }
-      const data = await response.json(); // Parsear la respuesta como JSON
-      return data; // Retorna los datos obtenidos
-    } catch (error) {
-      console.error('Error en el fetch:', error);
-      throw error; // Puedes lanzar el error para manejarlo en otro lugar
+
+      const result = await response.json();
+      console.log("Respuesta recibida:", result);
     }
-  };
-  
+
+    return { exito: "Datos insertados correctamente" }; // Éxito
+  } catch (error) {
+    console.error("Error en la petición:", error);
+    throw error; // Error
+  }
+}
+
+async function enviarJSONEnOrden(dataArray, url) {
+  try {
+    for (const data of dataArray) {
+      
+      const response = await fetch(url, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log("Respuesta recibida:", result);
+    }
+
+    return { exito: "Datos insertados correctamente" }; // Éxito
+  } catch (error) {
+    console.error("Error en la petición:", error);
+    return { error: error.message }; // Error
+  }
+}
+
+export {enviarJSONEnOrden, enviarTextoPlanoEnOrden}
