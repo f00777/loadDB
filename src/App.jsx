@@ -7,7 +7,7 @@ import { generateSQLScript, downloadSQLFile } from "./utils/sqlGenerator";
 import SelectTable from './components/SelectTable';
 import {enviarJSONEnOrden, enviarTextoPlanoEnOrden} from './utils/connectAPI';
 import LogoutButton from './components/LogoutButton';
-import Backbutton from './components/Backbutton';
+import RegretButton from './components/RegretButton';
 
 function App() {
   const [formData, setFormData] = useState({
@@ -186,7 +186,7 @@ function App() {
           
           <SelectTable handleSelectTableSubmit={handleSelectTableSubmit} />
 
-          <Backbutton onClick={lessStep} />
+          <RegretButton onClick={lessStep} />
          
         </div>
       ) : step == 3 ? (
@@ -208,7 +208,7 @@ function App() {
           
           <FileUpload onFileChange={handleFileChange} /> 
 
-          <Backbutton onClick={lessStep} />
+          <RegretButton onClick={lessStep} />
 
           </div>
          )
@@ -219,19 +219,19 @@ function App() {
 
           <h2 className="text-2xl font-bold mb-4 text-indigo-600">Error insertando datos</h2>
 
-          <Backbutton onClick={step1} />
+          <RegretButton onClick={step1} />
         </div>
       ) : step === 5 ? (
         <div className="text-center">
           <LogoutButton />
           <h2 className="text-2xl font-bold mb-4 text-indigo-600">DATOS INSERTADOS CORRECTAMENTE</h2>
-          <Backbutton onClick={step2} />
+          <RegretButton onClick={step2} />
         </div>
       ) : (
 
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4 text-indigo-600">Usuario, Contraseña o Nombre de Base de datos incorrecta</h2>
-          <Backbutton onClick={step1} />
+          <RegretButton onClick={step1} />
         </div>
 
       )
