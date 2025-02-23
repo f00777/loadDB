@@ -6,9 +6,9 @@ import { readCSV } from './utils/csvUtils';
 import { generateSQLScript, downloadSQLFile } from "./utils/sqlGenerator";
 import SelectTable from './components/SelectTable';
 import {enviarJSONEnOrden, enviarTextoPlanoEnOrden} from './utils/connectAPI';
-import LogoutButton from './components/LogoutButton';
+/* import LogoutButton from './components/LogoutButton';
 import BackButton from './components/Backbutton';
-
+ */
 function App() {
   const [formData, setFormData] = useState({
     server: "",
@@ -182,11 +182,11 @@ function App() {
       ) : step == 2 ? (
         <div className="text-center hover:text-indigo-600">
 
-          <LogoutButton />
+          {/* <LogoutButton /> */}
           
           <SelectTable handleSelectTableSubmit={handleSelectTableSubmit} />
 
-          <BackButton onClick={lessStep} />
+          {/* <BackButton onClick={lessStep} /> */}
          
         </div>
       ) : step == 3 ? (
@@ -204,34 +204,34 @@ function App() {
          ) : (
           <div className="text-center hover:text-indigo-600">
 
-          <LogoutButton />
+          {/* <LogoutButton /> */}
           
           <FileUpload onFileChange={handleFileChange} /> 
 
-          <BackButton onClick={lessStep} />
+          {/* <BackButton onClick={lessStep} /> */}
 
           </div>
          )
       )   
       : step === 4 ? (
         <div className="text-center">
-          <LogoutButton />
+          {/* <LogoutButton /> */}
 
           <h2 className="text-2xl font-bold mb-4 text-indigo-600">Error insertando datos</h2>
 
-          <BackButton onClick={step1} />
+          {/* <BackButton onClick={step1} /> */}
         </div>
       ) : step === 5 ? (
         <div className="text-center">
-          <LogoutButton />
+          {/* <LogoutButton /> */}
           <h2 className="text-2xl font-bold mb-4 text-indigo-600">DATOS INSERTADOS CORRECTAMENTE</h2>
-          <BackButton onClick={step2} />
+          {/* <BackButton onClick={step2} /> */}
         </div>
       ) : (
 
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4 text-indigo-600">Usuario, Contraseña o Nombre de Base de datos incorrecta</h2>
-          <BackButton onClick={step1} />
+          {/* <BackButton onClick={step1} /> */}
         </div>
 
       )
