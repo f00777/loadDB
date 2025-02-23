@@ -1,4 +1,4 @@
-export default function BackButton({ onClick }) {
+export default function Backbutton({ onClick }) {
     return (
       <button
         onClick={onClick}
