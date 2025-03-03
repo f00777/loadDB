@@ -28,7 +28,10 @@ const generateSQLScript = (csvData, tableName) => {
   let pTemp = `EXEC c${tableName}Temp`;
   let pTable = `EXEC c${tableName}`;
 
-  return { crudaScripts, tScripts, transformScripts, cleanTransform, cleanTemp, pTemp, pTable };
+  let lastFecha = `SELECT MAX(FechaCreacion) FROM q${tableName}`
+  let periodo = `SELECT Periodo FROM q${tableName} WHERE FechaCreacion = (SELECT MAX(FechaCreacion) FROM q${tableName})`
+
+  return { crudaScripts, tScripts, transformScripts, cleanTransform, cleanTemp, pTemp, pTable, values, lastFecha, periodo};
 };
 
 
