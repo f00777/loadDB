@@ -167,8 +167,8 @@ function App() {
         ],"/api/query")
 
         if(formData.table == "SabanaCompleta"){
-          console.log("Se entró a ejecutar spFixSabanaCompleta")
-          await enviarTextoPlanoEnOrden(["EXEC spFixSabanaCompleta"], "/api/query")
+          //console.log("Se entró a ejecutar spFixSabanaCompleta")
+          //await enviarTextoPlanoEnOrden(["EXEC spFixSabanaCompleta"], "/api/query")
         }  
 
         const lastFecha = Object.values(responseLastFecha.exito.exito.recordset[0])[0]
