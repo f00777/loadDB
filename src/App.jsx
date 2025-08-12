@@ -167,7 +167,7 @@ function App() {
         ],"/api/query")
 
         if(formData.table == "SabanaCompleta"){
-          console.log("Se entró a ejecutar spFixSabanaCompleta)
+          console.log("Se entró a ejecutar spFixSabanaCompleta")
           await enviarTextoPlanoEnOrden(["EXEC spFixSabanaCompleta"], "/api/query")
         }  
 
