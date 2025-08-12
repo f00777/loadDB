@@ -166,6 +166,10 @@ function App() {
           sqlScript.periodo
         ],"/api/query")
 
+        if(formData.table == "SabanaCompleta"){
+          console.log("Se entró a ejecutar spFixSabanaCompleta)
+          await enviarTextoPlanoEnOrden(["EXEC spFixSabanaCompleta"], "/api/query")
+        }  
 
         const lastFecha = Object.values(responseLastFecha.exito.exito.recordset[0])[0]
         const lastPeriodo = Object.values(responseLastPeriodo.exito.exito.recordset[0])[0]
