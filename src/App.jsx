@@ -162,17 +162,21 @@ function App() {
           sqlScript.lastFecha
         ],"/api/query")
 
-        const responseLastPeriodo = await enviarTexto([
-          sqlScript.periodo
-        ],"/api/query")
+        if(!formData.table == "Tkt"){
+          const responseLastPeriodo = await enviarTexto([
+            sqlScript.periodo
+          ],"/api/query")
+        }
+        
 
-        if(formData.table == "SabanaCompleta"){
-          //console.log("Se entró a ejecutar spFixSabanaCompleta")
-          //await enviarTextoPlanoEnOrden(["EXEC spFixSabanaCompleta"], "/api/query")
-        }  
 
         const lastFecha = Object.values(responseLastFecha.exito.exito.recordset[0])[0]
-        const lastPeriodo = Object.values(responseLastPeriodo.exito.exito.recordset[0])[0]
+        let lastPeriodo = ""
+
+        if(!formData.table == "Tkt"){
+          lastPeriodo = Object.values(responseLastPeriodo.exito.exito.recordset[0])[0]
+        }
+        
 
         setInsertados(0)
         setInsertadosT(0)
