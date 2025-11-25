@@ -162,22 +162,20 @@ function App() {
           sqlScript.lastFecha
         ],"/api/query")
 
-        if(!formData.table == "Tkt"){
-          const responseLastPeriodo = await enviarTexto([
+        let responseLastPeriodo = null;
+        if(formData.table !== "Tkt"){
+          responseLastPeriodo = await enviarTexto([
             sqlScript.periodo
           ],"/api/query")
         }
         
-
-
         const lastFecha = Object.values(responseLastFecha.exito.exito.recordset[0])[0]
         let lastPeriodo = ""
 
-        if(!formData.table == "Tkt"){
+        if(formData.table !== "Tkt" && responseLastPeriodo?.exito?.exito?.recordset?.[0]){
           lastPeriodo = Object.values(responseLastPeriodo.exito.exito.recordset[0])[0]
         }
         
-
         setInsertados(0)
         setInsertadosT(0)
         setCantValues(0)
