@@ -5,7 +5,7 @@ import FileUpload from './components/FileUpload';
 import { readCSV } from './utils/csvUtils';
 import { generateSQLScript, downloadSQLFile } from "./utils/sqlGenerator";
 import SelectTable from './components/SelectTable';
-import {enviarJSONEnOrden, enviarTextoPlanoEnOrden, enviarTexto} from './utils/connectAPI';
+import { enviarJSONEnOrden, enviarTextoPlanoEnOrden, enviarTexto } from './utils/connectAPI';
 import LogoutButton from './components/LogoutButton';
 import RegretButton from './components/RegretButton';
 import Tabla from './components/Tabla';
@@ -22,8 +22,8 @@ function App() {
   const [step, setStep] = useState(1);  // Nuevo estado para controlar el paso
 
   const [loading, setLoading] = useState(false)
-  
-  const [procesados, setProcesados] = useState([]) 
+
+  const [procesados, setProcesados] = useState([])
 
   const [insertados, setInsertados] = useState(0)
 
@@ -58,14 +58,14 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Datos enviados:", formData);
-    
+
     setLoading(true);
 
     const response = await enviarJSONEnOrden(
       [
         {
           user: formData.user,
-          password : formData.password,
+          password: formData.password,
           database: formData.database
         }
       ], "/api/login"
@@ -73,14 +73,14 @@ function App() {
 
     setLoading(false)
 
-    if(response.exito){
+    if (response.exito) {
       setStep(2);
     }
 
-    else{
+    else {
       setStep(6)
     }
-    
+
   };
 
   const handleSelectTableSubmit = (e) => {
@@ -88,7 +88,7 @@ function App() {
     const select = document.getElementById("table")
     setFormData({
       ...formData,
-      [select.name]: select.value, 
+      [select.name]: select.value,
     });
     setStep(3);
 
@@ -100,33 +100,33 @@ function App() {
       if (!headers || headers.length === 0) {
         console.error("El archivo CSV no tiene headers válidos.");
         return;
-      } 
+      }
 
       setLoading(true)
 
       const sqlScript = generateSQLScript([headers, ...rows], formData.table)
 
-      setCantValues( prev => {
+      setCantValues(prev => {
         return prev + sqlScript.values.length
       })
 
       agregarElementoProcesado("Scripts Generado")
-  
+
       try {
 
         const cleanTemp = await enviarTextoPlanoEnOrden([
           sqlScript.cleanTemp
-        ],"/api/query")
+        ], "/api/query")
 
         agregarElementoProcesado("Tabla temporal limpiadda")
-    
-        
+
+
         const cleanTransform = await enviarTextoPlanoEnOrden([
-            sqlScript.cleanTransform
-        ],"/api/query") 
+          sqlScript.cleanTransform
+        ], "/api/query")
 
         agregarElementoProcesado("Tabla de transformacion limpiada")
-        
+
 
         const crudaScripts = await enviarTextoPlanoEnOrden(
           sqlScript.crudaScripts, "/api/query", setInsertados, sqlScript.values.length
@@ -135,47 +135,47 @@ function App() {
         console.log(insertados)
 
         agregarElementoProcesado("Datos insertados en Tabla Cruda")
-    
+
 
         const transformScripts = await enviarTextoPlanoEnOrden(
-          sqlScript.transformScripts,"/api/query", setInsertadosT, sqlScript.values.length
-        ) 
+          sqlScript.transformScripts, "/api/query", setInsertadosT, sqlScript.values.length
+        )
 
         agregarElementoProcesado("Datos insertados en Tabla de Transformacion")
-    
+
 
         const pTemp = await enviarTextoPlanoEnOrden([
           sqlScript.pTemp
-        ],"/api/query")
+        ], "/api/query")
 
         agregarElementoProcesado("Datos insertados en Tabla Temporal")
-    
+
 
         const pTable = await enviarTextoPlanoEnOrden([
           sqlScript.pTable
-        ],"/api/query")
+        ], "/api/query")
 
         agregarElementoProcesado("Datos insertados en Tabla oficial")
 
 
         const responseLastFecha = await enviarTexto([
           sqlScript.lastFecha
-        ],"/api/query")
+        ], "/api/query")
 
         let responseLastPeriodo = null;
-        if(formData.table !== "Tkt"){
+        if (formData.table !== ("Tkt" || "ComisionesVendedoraDetallado")) {
           responseLastPeriodo = await enviarTexto([
             sqlScript.periodo
-          ],"/api/query")
+          ], "/api/query")
         }
-        
+
         const lastFecha = Object.values(responseLastFecha.exito.exito.recordset[0])[0]
         let lastPeriodo = ""
 
-        if(formData.table !== "Tkt" && responseLastPeriodo?.exito?.exito?.recordset?.[0]){
+        if (formData.table !== ("Tkt" || "ComisionesVendedoraDetallado") && responseLastPeriodo?.exito?.exito?.recordset?.[0]) {
           lastPeriodo = Object.values(responseLastPeriodo.exito.exito.recordset[0])[0]
         }
-        
+
         setInsertados(0)
         setInsertadosT(0)
         setCantValues(0)
@@ -186,26 +186,26 @@ function App() {
           registros: sqlScript.values.length,
           fecha: lastFecha,
           periodo: lastPeriodo
-      }));
+        }));
 
         setStep(5)
-        
+
       } catch (error) {
 
         setInsertados(0)
         setInsertadosT(0)
         setCantValues(0)
         setStep(4)
-        
+
       }
-      
-  
-    
+
+
+
       setLoading(false)
       setProcesados([])
 
       console.log(sqlScript)
-  
+
       // Descargar el archivo SQL
       //downloadSQLFile(sqlScript2.testScript);
     });
@@ -218,7 +218,7 @@ function App() {
     setInsertadosT(0)
     setCantValues(0)
 
-    setStep(actualStep -1)
+    setStep(actualStep - 1)
   }
 
   const step1 = () => {
@@ -233,27 +233,27 @@ function App() {
     setInsertados(0)
     setInsertadosT(0)
     setCantValues(0)
-    
+
     setStep(2)
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       {step === 1 ? (
-       loading ? (
-        <div className="animate-spin h-5 w-5 border-t-2 border-blue-500 rounded-full"></div>
-       ) : (
-        <FormInit formData={formData} handleChange={handleChange} handleSubmit={handleSubmit} />
-       )
+        loading ? (
+          <div className="animate-spin h-5 w-5 border-t-2 border-blue-500 rounded-full"></div>
+        ) : (
+          <FormInit formData={formData} handleChange={handleChange} handleSubmit={handleSubmit} />
+        )
       ) : step == 2 ? (
         <div className="text-center hover:text-indigo-600">
 
           <LogoutButton />
-          
+
           <SelectTable handleSelectTableSubmit={handleSelectTableSubmit} />
 
           <RegretButton onClick={lessStep} />
-         
+
         </div>
       ) : step == 3 ? (
         loading ? (
@@ -266,56 +266,56 @@ function App() {
 
             <div className="animate-spin h-10 w-10 border-t-2 border-blue-500 rounded-full mx-auto"></div>
 
-            { <div>
+            {<div>
               {procesados.map((item, index) => (
                 <p className='text-black pt-4' key={index}><strong>{item}</strong></p>
               ))}
-            </div> }
+            </div>}
 
           </div>
-         ) : (
+        ) : (
           <div className="text-center hover:text-indigo-600">
 
-          <LogoutButton /> 
-          
-          <FileUpload onFileChange={handleFileChange} /> 
+            <LogoutButton />
 
-          <RegretButton onClick={lessStep} />
+            <FileUpload onFileChange={handleFileChange} />
+
+            <RegretButton onClick={lessStep} />
 
           </div>
-         )
-      )   
-      : step === 4 ? (
-        <div className="text-center">
-          <LogoutButton />
-
-          <h2 className="text-2xl font-bold mb-4 text-indigo-600">Error insertando datos</h2>
-
-          <RegretButton onClick={step1} />
-        </div>
-      ) : step === 5 ? (
-        <div className="text-center">
-          <LogoutButton />
-          <h2 className="text-2xl font-bold mb-4 text-indigo-600">DATOS INSERTADOS CORRECTAMENTE</h2>
-
-          <Tabla 
-            tabla={datosTabla.tabla}
-            registros={datosTabla.registros}
-            ultimaFecha={datosTabla.fecha}
-            ultimoPeriodo={datosTabla.periodo}
-          />
-
-          <RegretButton onClick={step2} />
-        </div>
-      ) : (
-
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4 text-indigo-600">Usuario, Contraseña o Nombre de Base de datos incorrecta</h2>
-          <RegretButton onClick={step1} />
-        </div>
-
+        )
       )
-      
+        : step === 4 ? (
+          <div className="text-center">
+            <LogoutButton />
+
+            <h2 className="text-2xl font-bold mb-4 text-indigo-600">Error insertando datos</h2>
+
+            <RegretButton onClick={step1} />
+          </div>
+        ) : step === 5 ? (
+          <div className="text-center">
+            <LogoutButton />
+            <h2 className="text-2xl font-bold mb-4 text-indigo-600">DATOS INSERTADOS CORRECTAMENTE</h2>
+
+            <Tabla
+              tabla={datosTabla.tabla}
+              registros={datosTabla.registros}
+              ultimaFecha={datosTabla.fecha}
+              ultimoPeriodo={datosTabla.periodo}
+            />
+
+            <RegretButton onClick={step2} />
+          </div>
+        ) : (
+
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-4 text-indigo-600">Usuario, Contraseña o Nombre de Base de datos incorrecta</h2>
+            <RegretButton onClick={step1} />
+          </div>
+
+        )
+
       }
     </div>
   );
