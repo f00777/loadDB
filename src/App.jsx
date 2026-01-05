@@ -157,9 +157,27 @@ function App() {
 
         agregarElementoProcesado("Datos insertados en Tabla oficial")
 
+        // Para ComisionesVendedoraDetallado, saltar directamente al step 5
+        if (formData.table === "ComisionesVendedoraDetallado") {
+          setInsertados(0)
+          setInsertadosT(0)
+          setCantValues(0)
+          setDatosTabla(prev => ({
+            ...prev,
+            tabla: formData.table,
+            registros: sqlScript.values.length,
+            fecha: "",
+            periodo: ""
+          }))
+          setLoading(false)
+          setProcesados([])
+          setStep(5)
+          return
+        }
+
         let responseLastFecha = null;
 
-        if (formData.table !== ("ComisionesVendedoraDetallado")) {
+        if (formData.table !== "ComisionesVendedoraDetallado") {
           responseLastFecha = await enviarTexto([
             sqlScript.lastFecha
           ], "/api/query")
