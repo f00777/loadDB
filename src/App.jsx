@@ -172,11 +172,15 @@ function App() {
           ], "/api/query")
         }
 
-        const lastFecha = Object.values(responseLastFecha.exito.exito.recordset[0])[0]
+        let lastFecha = ""
         let lastPeriodo = ""
 
         if (formData.table !== ("Tkt" || "ComisionesVendedoraDetallado") && responseLastPeriodo?.exito?.exito?.recordset?.[0]) {
           lastPeriodo = Object.values(responseLastPeriodo.exito.exito.recordset[0])[0]
+        }
+
+        if (formData.table !== "ComisionesVendedoraDetallado") {
+          lastFecha = Object.values(responseLastFecha.exito.exito.recordset[0])[0]
         }
 
         setInsertados(0)
