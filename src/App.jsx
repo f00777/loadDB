@@ -157,10 +157,13 @@ function App() {
 
         agregarElementoProcesado("Datos insertados en Tabla oficial")
 
+        let responseLastFecha = null;
 
-        const responseLastFecha = await enviarTexto([
-          sqlScript.lastFecha
-        ], "/api/query")
+        if (formData.table !== ("ComisionesVendedoraDetallado")) {
+          responseLastFecha = await enviarTexto([
+            sqlScript.lastFecha
+          ], "/api/query")
+        }
 
         let responseLastPeriodo = null;
         if (formData.table !== ("Tkt" || "ComisionesVendedoraDetallado")) {
