@@ -38,6 +38,13 @@ function App() {
     periodo: ""
   })
 
+  // Estado para eliminaciones con fechas
+  const [eliminacionesConfig, setEliminacionesConfig] = useState({
+    permitirEliminaciones: false,
+    fechaInicio: "",
+    fechaFinal: ""
+  })
+
   const agregarElementoProcesado = (text) => {
     // Aquí usamos el estado actual correctamente para agregar el nuevo valor
     setProcesados((prevProcesados) => {
@@ -83,15 +90,24 @@ function App() {
 
   };
 
-  const handleSelectTableSubmit = (e) => {
+  const handleSelectTableSubmit = (e, formDataExtra = null) => {
     e.preventDefault();
     const select = document.getElementById("table")
     setFormData({
       ...formData,
       [select.name]: select.value,
     });
-    setStep(3);
 
+    // Guardar configuración de eliminaciones si se proporcionó
+    if (formDataExtra) {
+      setEliminacionesConfig({
+        permitirEliminaciones: formDataExtra.permitirEliminaciones,
+        fechaInicio: formDataExtra.fechaInicio,
+        fechaFinal: formDataExtra.fechaFinal
+      });
+    }
+
+    setStep(3);
   }
 
 
@@ -151,11 +167,26 @@ function App() {
         agregarElementoProcesado("Datos insertados en Tabla Temporal")
 
 
-        const pTable = await enviarTextoPlanoEnOrden([
-          sqlScript.pTable
-        ], "/api/query")
+        // Ejecutar script con o sin fechas según configuración de eliminaciones
+        if (eliminacionesConfig.permitirEliminaciones && eliminacionesConfig.fechaInicio && eliminacionesConfig.fechaFinal) {
+          const pTableConFechas = sqlScript.generatePTableConFechas(eliminacionesConfig.fechaInicio, eliminacionesConfig.fechaFinal);
+          const pTable = await enviarTextoPlanoEnOrden([
+            pTableConFechas
+          ], "/api/query")
+          agregarElementoProcesado("Datos insertados en Tabla oficial (con eliminaciones)")
+        } else {
+          const pTable = await enviarTextoPlanoEnOrden([
+            sqlScript.pTable
+          ], "/api/query")
+          agregarElementoProcesado("Datos insertados en Tabla oficial")
+        }
 
-        agregarElementoProcesado("Datos insertados en Tabla oficial")
+        // Resetear configuración de eliminaciones
+        setEliminacionesConfig({
+          permitirEliminaciones: false,
+          fechaInicio: "",
+          fechaFinal: ""
+        })
 
         // Para ComisionesVendedoraDetallado, saltar directamente al step 5
         if (formData.table === "ComisionesVendedoraDetallado") {

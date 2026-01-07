@@ -2,7 +2,7 @@ import React from "react";
 
 const generateSQLScript = (csvData, tableName) => {
   if (!csvData || csvData.length === 0) return "";
-  
+
   const headers = csvData[0]; // Primera fila como headers
   const values = csvData.slice(1); // Resto como valores
   const chunkSize = 200;
@@ -11,14 +11,14 @@ const generateSQLScript = (csvData, tableName) => {
     let scripts = [];
     for (let i = 0; i < values.length; i += chunkSize) {
       const chunk = values.slice(i, i + chunkSize);
-      const valueLines = chunk.map(row => `(${row.map(value => `'${value}'`).slice(0,-1).join(", ")})`).join(",\n");
+      const valueLines = chunk.map(row => `(${row.map(value => `'${value}'`).slice(0, -1).join(", ")})`).join(",\n");
       const script = `${prefix} VALUES\n${valueLines};`;
       scripts.push(script);
     }
     return scripts;
   };
 
-  const headersFormatted = headers.slice(0,-1).map(header => `[${header}]`).join(", ");
+  const headersFormatted = headers.slice(0, -1).map(header => `[${header}]`).join(", ");
   const crudaScripts = createInsertScripts(`INSERT INTO Cruda${tableName} (${headersFormatted})`);
   const tScripts = createInsertScripts(`INSERT INTO ${tableName} (${headersFormatted})`);
   const transformScripts = createInsertScripts(`INSERT INTO ${tableName}Transform (${headersFormatted})`);
@@ -28,14 +28,19 @@ const generateSQLScript = (csvData, tableName) => {
   let pTemp = `EXEC c${tableName}Temp`;
   let pTable = `EXEC c${tableName}`;
 
+  // Función para generar el script con fechas para eliminaciones
+  const generatePTableConFechas = (fechaInicio, fechaFinal) => {
+    return `EXEC c${tableName}ConFechas @FechaInicio = '${fechaInicio}', @FechaFinal = '${fechaFinal}'`;
+  };
+
   let lastFecha = `SELECT MAX(FechaCreacion) FROM q${tableName}`
   let periodo = `SELECT Periodo FROM q${tableName} WHERE FechaCreacion = (SELECT MAX(FechaCreacion) FROM q${tableName})`
 
-  if(tableName == "Tkt"){
+  if (tableName == "Tkt") {
     lastFecha = `SELECT MAX(FechaEmision) FROM q${tableName}`
   }
 
-  return { crudaScripts, tScripts, transformScripts, cleanTransform, cleanTemp, pTemp, pTable, values, lastFecha, periodo};
+  return { crudaScripts, tScripts, transformScripts, cleanTransform, cleanTemp, pTemp, pTable, generatePTableConFechas, values, lastFecha, periodo };
 };
 
 
@@ -49,4 +54,4 @@ const downloadSQLFile = (sqlScript, fileName = "script.sql") => {
   document.body.removeChild(link);
 };
 
-export {generateSQLScript, downloadSQLFile };
+export { generateSQLScript, downloadSQLFile };
