@@ -188,8 +188,8 @@ function App() {
           fechaFinal: ""
         })
 
-        // Para ComisionesVendedoraDetallado, saltar directamente al step 5
-        if (formData.table === "ComisionesVendedoraDetallado") {
+        // Para ComisionesVendedoraDetallado y UETT, saltar directamente al step 5
+        if (formData.table === "ComisionesVendedoraDetallado" || formData.table === "UETT") {
           setInsertados(0)
           setInsertadosT(0)
           setCantValues(0)

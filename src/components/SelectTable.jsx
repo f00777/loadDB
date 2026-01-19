@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const SelectTable = ({ handleSelectTableSubmit }) => {
 
   const [value, setValue] = useState("");
-  const [permitirEliminaciones, setPermitirEliminaciones] = useState(false);
+  const [permitirEliminaciones, setPermitirEliminaciones] = useState(true);
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFinal, setFechaFinal] = useState("");
   const [errorFechas, setErrorFechas] = useState("");
@@ -79,6 +79,7 @@ const SelectTable = ({ handleSelectTableSubmit }) => {
             <option value="SabanaCompleta">SabanaCompleta</option>
             <option value="Tkt">Tkt</option>
             <option value="ComisionesVendedoraDetallado">CVD</option>
+            <option value="UETT">UETT</option>
           </select>
         </div>
 
