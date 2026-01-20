@@ -227,7 +227,7 @@ const SelectTable = ({ handleSelectTableSubmit }) => {
         <div className="w-px bg-gray-300 mx-4"></div>
 
         {/* Columna Derecha - Procedimientos Almacenados */}
-        <div className="flex-1 pl-8">
+        <div className="flex-1 pl-8 max-h-[60vh] overflow-y-auto">
           <h2 className="text-4xl font-extrabold mb-4 text-center text-indigo-600">Procedimientos</h2>
 
           <div className="space-y-4">
@@ -280,6 +280,27 @@ const SelectTable = ({ handleSelectTableSubmit }) => {
               </p>
               <button
                 onClick={() => executeStoredProcedure("sp_syncDevolucionesSC")}
+                disabled={isLoadingSP}
+                className="cursor-pointer w-full py-2 px-4 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              >
+                {isLoadingSP ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Ejecutando...
+                  </span>
+                ) : (
+                  "Ejecutar"
+                )}
+              </button>
+            </div>
+
+            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Cargar aUETT</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Trunca la tabla aUETT y la vuelve a llenar cruzando los datos desde SC y UETT.
+              </p>
+              <button
+                onClick={() => executeStoredProcedure("sp_CargarAUETT")}
                 disabled={isLoadingSP}
                 className="cursor-pointer w-full py-2 px-4 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
               >
