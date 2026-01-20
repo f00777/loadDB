@@ -46,9 +46,6 @@ const SelectTable = ({ handleSelectTableSubmit }) => {
 
   const showNotification = (type, message) => {
     setNotification({ show: true, type, message });
-    setTimeout(() => {
-      setNotification({ show: false, type: "", message: "" });
-    }, 5000);
   };
 
   const executeStoredProcedure = async (procedureName) => {
@@ -174,7 +171,7 @@ const SelectTable = ({ handleSelectTableSubmit }) => {
                 ¿Permitir eliminaciones?
               </label>
               <p className="text-xs text-gray-500 mt-1">
-                Se deshabilitarán todos aquellos negocios/servicios que no estén dentro del periodo seleccionado.
+                Se deshabilitarán todos aquellos negocios/servicios que no se estén cargando dentro del periodo seleccionado.
               </p>
             </div>
 
@@ -241,6 +238,48 @@ const SelectTable = ({ handleSelectTableSubmit }) => {
               </p>
               <button
                 onClick={() => executeStoredProcedure("sp_CategorizarRuta")}
+                disabled={isLoadingSP}
+                className="cursor-pointer w-full py-2 px-4 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              >
+                {isLoadingSP ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Ejecutando...
+                  </span>
+                ) : (
+                  "Ejecutar"
+                )}
+              </button>
+            </div>
+
+            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Procesos Post Subida</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Ejecuta procesos varios que se deben realizar después de una carga a la SabanaCompleta.
+              </p>
+              <button
+                onClick={() => executeStoredProcedure("sp_ProcesosPostSubida")}
+                disabled={isLoadingSP}
+                className="cursor-pointer w-full py-2 px-4 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              >
+                {isLoadingSP ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Ejecutando...
+                  </span>
+                ) : (
+                  "Ejecutar"
+                )}
+              </button>
+            </div>
+
+            <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Sincronizar Devoluciones</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Lee la tabla Sabana Completa y actualiza fEsDevolucion si es que el ticket es devolución.
+              </p>
+              <button
+                onClick={() => executeStoredProcedure("sp_syncDevolucionesSC")}
                 disabled={isLoadingSP}
                 className="cursor-pointer w-full py-2 px-4 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
               >
