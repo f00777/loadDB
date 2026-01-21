@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import CsvDateUpload from "./CsvDateUpload";
 
 const SelectTable = ({ handleSelectTableSubmit }) => {
 
@@ -14,8 +15,8 @@ const SelectTable = ({ handleSelectTableSubmit }) => {
 
   const validarFechas = (inicio, final) => {
     if (inicio && final) {
-      if (new Date(final) <= new Date(inicio)) {
-        setErrorFechas("La fecha de término debe ser mayor que la fecha de inicio");
+      if (new Date(final) < new Date(inicio)) {
+        setErrorFechas("La fecha de término debe ser mayor o igual a la fecha de inicio");
         return false;
       }
     }
@@ -42,6 +43,12 @@ const SelectTable = ({ handleSelectTableSubmit }) => {
       setFechaFinal("");
       setErrorFechas("");
     }
+  };
+
+  const handleDatesExtracted = (fechaMin, fechaMax) => {
+    setFechaInicio(fechaMin);
+    setFechaFinal(fechaMax);
+    setErrorFechas("");
   };
 
   const showNotification = (type, message) => {
@@ -177,6 +184,7 @@ const SelectTable = ({ handleSelectTableSubmit }) => {
 
             {permitirEliminaciones && (
               <div className="mb-4 p-4 border border-indigo-200 rounded-md bg-indigo-50">
+                <CsvDateUpload onDatesExtracted={handleDatesExtracted} />
                 <div className="mb-3">
                   <label htmlFor="fechaInicio" className="block text-sm font-medium text-gray-700">
                     Fecha de Inicio
@@ -316,8 +324,8 @@ const SelectTable = ({ handleSelectTableSubmit }) => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
 
